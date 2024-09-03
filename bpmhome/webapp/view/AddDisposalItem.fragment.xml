@@ -1,0 +1,42 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form">
+    <Dialog id="theDialogId" title="ADD DISPOSAL">
+        <content>
+            <f:SimpleForm id="AddDisposalId" editable="true" >
+                <f:content>
+                    <Label id="lblName" text="Asset SubNumber" labelFor="astSubNo" />
+                    <Input id="astSubNo" editable="true" value="{Disposal>/AssetSubNumber}"/>
+					<Label id="lblName1" text="Description" labelFor="desc" />
+                    <Input id="desc" editable="true" value="{Disposal>/Description}"/>
+					<Label id="lblName2" text="Year of Purchase" labelFor="yop" />
+                    <Input id="yop" editable="true" value="{Disposal>/Yop}"/>
+					<Label id="lblName3" text="Gross Book Value(LC)" labelFor="gbv" />
+                    <Input id="gbv" editable="true" value="{Disposal>/GBV}"/>
+					<Label id="lblName4" text="Depreciation(-)(LC)" labelFor="deprec" />
+                    <Input id="deprec" editable="true" value="{Disposal>/Depreciation}"/>
+					<Label id="lblName5" text="Net Value(LC)" labelFor="netVal" />
+                    <Input id="netVal" editable="true" value="{Disposal>/netValue}"/>
+					<Label id="lblName6" text="Selling Price NO VAT(LC)" labelFor="spnoVat" />
+                    <Input id="spnoVat" editable="true" value="{Disposal>/spnovat}"/>
+					<Label id="lblName7" text="Gain (Loss) (LC)" labelFor="gain" />
+                    <Input id="gain" editable="true" value="{Disposal>/Gain}"/>
+					<Label id="lblName8" text="" labelFor="others" />
+                    <Input id="others" editable="true" value="{Disposal>/Others}"/>
+                </f:content>
+            </f:SimpleForm>
+        </content>
+		<footer>
+			<Toolbar id="_IDGenToolbar1">
+				<content>
+					<Button id="_IDGenButton1" type="Accept"
+							text="Add"
+							press="onAddDisposalItem" />
+					<Button id="Reject"
+						text="Reject"
+						type="Reject"
+						press="._closeDialog"
+						ariaHasPopup="Dialog" />
+				</content>
+			</Toolbar>
+		</footer>
+    </Dialog>
+</core:FragmentDefinition>

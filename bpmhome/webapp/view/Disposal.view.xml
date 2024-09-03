@@ -1,0 +1,297 @@
+<mvc:View controllerName="com.dev.comau.bpmhome.controller.Disposal" height="100%" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:u="sap.ui.unified" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout">
+    <Page id="page" title="BUSINESS PROCESS MANAGEMENT" class="sapUiContentPadding sapUiResponsivePadding--header sapUiResponsivePadding--subHeader sapUiResponsivePadding--content sapUiResponsivePadding--footer" titleAlignment="Center" showNavButton="true">
+        <headerContent></headerContent>
+        <content>
+            <VBox id="_IDGenVBox1">
+                <f:Form id="_IDGenForm1" editable="false">
+                    <f:title>
+                        <core:Title id="_IDGenTitle1" text="CREATE A NEW DISPOSAL"/>
+                    </f:title>
+                    <f:layout>
+                        <f:ResponsiveGridLayout id="_IDGenResponsiveGridLayout1" labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false"/>
+                    </f:layout>
+                    <f:formContainers>
+                        <f:FormContainer id="_IDGenFormContainer1">
+                            <f:formElements>
+                                <f:FormElement id="_IDGenFormElement1" label="Country">
+                                    <f:fields>
+                                        <ComboBox id="_IDGenComboBox1" items="{countries>/}" selectionChange="onSelectCountry">
+                                           <core:Item id="_IDGenItem13" key="{countries>COUNTRYID}" text="{countries>COUNTRY}"/>
+                                        </ComboBox>
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement id="_IDGenFormElement2" label="Legal Entity">
+                                    <f:fields>
+                                        <Input id="_IDLegalEntity" showSuggestion="true" showValueHelp="true" valueHelpRequest=".onValueHelpRequest" suggestionItems="{entity>/}">
+                                            <suggestionItems>
+                                                <core:Item id="_IDGenItem4" text="legal entity"/>
+                                            </suggestionItems>
+                                        </Input>
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement id="_IDGenFormElement3" label="BU/function - ORIGIN">
+                                    <f:fields>
+                                        <ComboBox id="_IDGenComboBox2" items="{bu>/}" selectionChange="onSelectBU">
+                                            <core:Item id="_IDGenItem11" key="{bu>BU_ORIGIN_ID}" text="{bu>BU_ORIGIN}"/>
+                                        </ComboBox>
+                                    </f:fields>
+                                </f:FormElement>
+                            </f:formElements>
+                        </f:FormContainer>
+                        <f:FormContainer id="_IDGenFormContainer2" title="Project Details">
+                            <f:formElements>
+                                <f:FormElement id="_IDGenFormElement4" label="Project Name">
+                                    <f:fields>
+                                        <Input id="project" value="{project>/name}" liveChange="genProjID"></Input>
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement id="_IDGenFormElement5" label="Project ID">
+                                    <f:fields>
+                                        <Label id="_IDprojlabel" text="{project>/ID}"></Label>
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement id="_IDGenFormElement6" label="Description and purpose of the project">
+                                    <f:fields>
+                                        <TextArea id="_IDGenTextArea1" value="{project>/description}"/>
+                                    </f:fields>
+                                </f:FormElement>
+                            </f:formElements>
+                        </f:FormContainer>
+                    </f:formContainers>
+                </f:Form>
+                <l:VerticalLayout id="_IDGenVerticalLayout1" class="sapUiContentPadding" width="100%">
+                    <Label id="_IDGenLabel2" text="Adoption of security rules"/>
+                    <RadioButtonGroup id="rbg1" columns="1" width="100%" class="sapUiMediumMarginBottom">
+                        <RadioButton id="RB1-1" text="Comply with current security rules"/>
+                        <RadioButton id="RB1-2" text="Not comply with current security rules but adaptable"/>
+                        <RadioButton id="RB1-3" text="Not comply with current security rules and not adaptable"/>
+                    </RadioButtonGroup>
+                    <Label id="_IDGenLabel3" text="Asset Condition"/>
+                    <RadioButtonGroup id="rbg2" columns="1" width="100%" class="sapUiMediumMarginBottom">
+                        <RadioButton id="RB1-4" text="Fully Functional"/>
+                        <RadioButton id="RB1-5" text="Not working but reparable"/>
+                        <RadioButton id="RB1-6" text="Not working but irreparable"/>
+                    </RadioButtonGroup>
+                    <Label id="_IDGenLabel4" text="Sustainablity"/>
+                    <RadioButtonGroup id="rbg3" columns="1" width="100%" class="sapUiMediumMarginBottom">
+                        <RadioButton id="RB1-7" text="Adequate for being used in views of its intended purpose"/>
+                        <RadioButton id="RB1-8" text="Not suitable for being used in views of its intended purpose. Requires chemical treatment or physical refurbishment, except for repairs"/>
+                    </RadioButtonGroup>
+                    <Label id="_IDGenLabel5" text="Level of Danger"/>
+                    <RadioButtonGroup id="rbg4" columns="1" width="100%" class="sapUiMediumMarginBottom">
+                        <RadioButton id="RB1-9" text="The Asset is not composed and doesn't contains substances toxic for health or dangerous for the environment"/>
+                        <RadioButton id="RB1-10" text="The Asset is composed or contains toxic substances for health"/>
+                    </RadioButtonGroup>
+                </l:VerticalLayout>
+                <l:VerticalLayout id="_IDGenVerticalLayout2">
+                    <Label id="_IDGenLabel6" text="Disposal kind"/>
+                    <RadioButtonGroup id="rbg5" columns="4" width="100%" class="sapUiMediumMarginBottom" select="onSelectDisposalKind">
+                        <RadioButton id="RB1-11" text="SCRAP"/>
+                        <RadioButton id="RB1-12" text="IP DISMISSAL"/>
+                        <RadioButton id="RB1-13" text="SALE"/>
+                        <RadioButton id="RB1-14" text="IP SALE(excl. Dismissal Patents)"/>
+                    </RadioButtonGroup>
+                    <Table id="idBudgetTable" items='{budget>/}'>
+                        <columns>
+                            <Column id="_IDGenColumn1" width="12em">
+                                <ComboBox id="_IDGenComboBox3" items="{countries>/}">
+                                    <core:Item id="_IDGenItem6" key="{countries>COUNTRYID}" text="{countries>CURRENCY}"/>
+                                </ComboBox>
+                            </Column>
+                            <Column id="_IDGenColumn2" minScreenWidth="Tablet" demandPopin="true">
+                                <Text id="_IDGenText1" text="Local Currency"/>
+                            </Column>
+                            <Column id="_IDGenColumn3" minScreenWidth="Desktop" demandPopin="true">
+                                <Text id="_IDGenText2" text="€"/>
+                            </Column>
+                        </columns>
+                        <items>
+                            <ColumnListItem id="_IDGenColumnListItem1" vAlign="Middle">
+                                <cells>
+                                    <Text id="_IDGenText3" text="{budget>title}"/>
+                                    <Text id="_IDGenText4" text="{budget>amount}"/>
+                                    <Text id="_IDGenText5" text="{budget>euro}"/>
+                                </cells>
+                            </ColumnListItem>
+                        </items>
+                    </Table>
+                    <l:HorizontalLayout id="_IDGenHorizontalLayout1" class="sapUiContentPadding" width="100%">
+                        <Label id="_IDGenLabel7" text="Sponsor"/>
+                        <Input id="_IDGenInput2" value=""/>
+                    </l:HorizontalLayout>
+                </l:VerticalLayout>
+                <Table id="idSaleTable" items='{sale>/}' visible="{= ${disposalkind>/visiblity} === 'scrap'}">
+                    <headerToolbar>
+                        <OverflowToolbar id="_IDGenOverflowToolbar1">
+                            <content>
+                                <Title id="_IDGenTitle2" text="Disposal Items" level="H2"/>
+                                <ToolbarSpacer id="_IDGenToolbarSpacer1"/>
+                                <Button id="_IDGenButton1" tooltip="Add" icon="sap-icon://add" press="handleAddItemPressed"/>
+                            </content>
+                        </OverflowToolbar>
+                    </headerToolbar>
+                    <columns>
+                        <Column id="_IDGenColumn4" width="12em">
+                            <Text id="_IDGenText6" text="Asset SubNumber"/>
+                        </Column>
+                        <Column id="_IDGenColumn5" minScreenWidth="Tablet" demandPopin="true">
+                            <Text id="_IDGenText7" text="Description"/>
+                        </Column>
+                        <Column id="_IDGenColumn6" minScreenWidth="Desktop" demandPopin="true">
+                            <Text id="_IDGenText8" text="Year of Purchase"/>
+                        </Column>
+                        <Column id="_IDGenColumn7" minScreenWidth="Desktop" demandPopin="true">
+                            <Text id="_IDGenText9" text="Gross Book Value(LC)"/>
+                        </Column>
+                        <Column id="_IDGenColumn8" minScreenWidth="Desktop" demandPopin="true">
+                            <Text id="_IDGenText10" text="Depreciation(-)(LC)"/>
+                        </Column>
+                        <Column id="_IDGenColumn9" minScreenWidth="Desktop" demandPopin="true">
+                            <Text id="_IDGenText11" text="Net Value(LC)"/>
+                        </Column>
+                        <Column id="_IDGenColumn10" minScreenWidth="Desktop" demandPopin="true">
+                            <Text id="_IDGenText12" text="Selling Price NO VAT(LC)"/>
+                        </Column>
+                        <Column id="_IDGenColumn11" minScreenWidth="Desktop" demandPopin="true" hAlign="End">
+                            <Text id="_IDGenText13" text="Gain (Loss) (LC)"/>
+                        </Column>
+                        <Column id="_IDGenColumn12" minScreenWidth="Desktop" demandPopin="true" hAlign="End">
+                            <Text id="_IDGenText14" text=""/>
+                        </Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem id="_IDGenColumnListItem2" vAlign="Middle">
+                            <cells>
+                                <Input id="_IDGenInput3" value="{sale>input1}"/>
+                                <Input id="_IDGenInput4" value="{sale>input2}"/>
+                                <Input id="_IDGenInput5" value="{sale>input3}"/>
+                                <Text id="_IDGenText15" text="{sale>input4}"/>
+                                <Text id="_IDGenText16" text="{sale>input5}"/>
+                                <Text id="_IDGenText17" text="{sale>input6}"/>
+                                <Text id="_IDGenText18" text="{sale>input7}"/>
+                                <Text id="_IDGenText19" text="{sale>input8}"/>
+                                <Button id="_IDGenButton2" icon="sap-icon://sys-cancel" press="deleteRow"/>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+                <f:Form id="_IDGenForm2" editable="false" visible="{= ${disposalkind>/visiblity} === 'sale'}">
+                    <f:title>
+                        <core:Title id="_IDGenTitle3" text="Sale Info"/>
+                    </f:title>
+                    <f:layout>
+                        <f:ResponsiveGridLayout id="_IDGenResponsiveGridLayout2" labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="2" columnsM="2" singleContainerFullSize="false"/>
+                    </f:layout>
+                    <f:formContainers>
+                        <f:FormContainer id="_IDGenFormContainer3">
+                            <f:formElements>
+                                <f:FormElement id="_IDGenFormElement7" label="Customer">
+                                    <f:fields>
+                                        <Input id="_IDGenInput6"/>
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement id="_IDGenFormElement8" label="Offer Number">
+                                    <f:fields>
+                                        <Input id="_IDGenInput7"/>
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement id="_IDGenFormElement9" label="Offer Amount (LC)">
+                                    <f:fields>
+                                        <Input id="_IDGenInput8"/>
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement id="_IDGenFormElement10" label="Note">
+                                    <f:fields>
+                                        <TextArea id="_IDGenTextArea2" width="100%"/>
+                                    </f:fields>
+                                </f:FormElement>
+                            </f:formElements>
+                        </f:FormContainer>
+                        <f:FormContainer id="_IDGenFormContainer4">
+                            <f:formElements>
+                                <f:FormElement id="_IDGenFormElement11" label="offer Date">
+                                    <f:fields>
+                                        <Input id="_IDGenInput9"/>
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement id="_IDGenFormElement12" label="Agreed Amount">
+                                    <f:fields>
+                                        <Input id="_IDGenInput10"/>
+                                    </f:fields>
+                                </f:FormElement>
+                            </f:formElements>
+                        </f:FormContainer>
+                    </f:formContainers>
+                </f:Form>
+            </VBox>
+            <VBox id="_IDGenVBox2">
+                <Title id="_IDGenTitle4" text="Attachments"></Title>
+                <Table id="_IDGenTable1" items='{evaluation>/}'>
+                    <columns>
+                        <Column id="_IDGenColumn13" width="12em">
+                            <Text id="_IDGenText20" text="Filename"/>
+                        </Column>
+                        <Column id="_IDGenColumn14" minScreenWidth="Tablet" demandPopin="true">
+                            <Text id="_IDGenText21" text="Upload Date"/>
+                        </Column>
+                        <Column id="_IDGenColumn15" minScreenWidth="Desktop" demandPopin="true">
+                            <Text id="_IDGenText22" text="Owner"/>
+                        </Column>
+                        <Column id="_IDGenColumn16" minScreenWidth="Desktop" demandPopin="true">
+                            <Text id="_IDGenText23" text="File Size"/>
+                        </Column>
+                        <Column id="_IDGenColumn17" minScreenWidth="Desktop" demandPopin="true">
+                            <Text id="_IDGenText24" text=""/>
+                        </Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem id="_IDGenColumnListItem3" vAlign="Middle">
+                            <cells>
+                                <Text id="_IDGenText25" text="{evaluation>title}"/>
+                                <Text id="_IDGenText26" text="{evaluation>withoutres}"/>
+                                <Text id="_IDGenText27" text="{evaluation>withres}"/>
+                                <Text id="_IDGenText28" text="{evaluation>withoutres}"/>
+                                <Text id="_IDGenText29" text="{evaluation>withres}"/>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+                <l:VerticalLayout id="_IDGenVerticalLayout3">
+                    <u:FileUploader id="fileUploader" name="myFileUpload" uploadUrl="upload/" tooltip="Upload your file to the local server" uploadComplete="handleUploadComplete"/>
+                    <Button id="_IDGenButton3" text="Upload File" press="handleUploadPress"/>
+                </l:VerticalLayout>
+            </VBox>
+            <VBox id="_IDGenVBox3">
+                <Title id="_IDGenTitle5" text="Other Fees"></Title>
+                <f:Form id="_IDGenForm3" editable="false">
+                    <f:layout>
+                        <f:ResponsiveGridLayout id="_IDGenResponsiveGridLayout3" labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="2" columnsM="2" singleContainerFullSize="false"/>
+                    </f:layout>
+                    <f:formContainers>
+                        <f:FormContainer id="_IDGenFormContainer5">
+                            <f:formElements>
+                                <f:FormElement id="_IDGenFormElement13" label="Other Fees">
+                                    <f:fields>
+                                        <Input id="_IDGenInput11"/>
+                                    </f:fields>
+                                </f:FormElement>
+                                <f:FormElement id="_IDGenFormElement14" label="Notes">
+                                    <f:fields>
+                                        <TextArea id="_IDGenTextArea3"/>
+                                    </f:fields>
+                                </f:FormElement>
+                            </f:formElements>
+                        </f:FormContainer>
+                    </f:formContainers>
+                </f:Form>
+            </VBox>
+        </content>
+        <footer>
+            <OverflowToolbar id="_IDGenOverflowToolbar2">
+                <ToolbarSpacer id="_IDGenToolbarSpacer2"/>
+                <Button id="_IDGenButton4" text="save" type="Accept" press="CallWorkflow"/>
+                <Button id="_IDGenButton5" text="Exit without saving" type="Reject"/>
+            </OverflowToolbar>
+        </footer>
+    </Page>
+</mvc:View>

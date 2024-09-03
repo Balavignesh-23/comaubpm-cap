@@ -1,0 +1,71 @@
+{
+  "welcomeFile": "comsapcomaubpmweb/index.html",
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/user-api(.*)",
+      "target": "$1",
+      "service": "sap-approuter-userapi"
+    },
+    {
+        "source": "^/createBPM",
+        "target": "/createBPM",
+        "destination": "bpm-api"
+    },
+    {
+      "source": "^/getCountry",
+      "target": "/getCountry",
+      "destination": "bpm-api"
+    },
+    {
+      "source": "^/getProject",
+      "target": "/getProject",
+      "destination": "bpm-api"
+    },
+    {
+      "source": "^/getExchangeRate",
+      "target": "/getExchangeRate",
+      "destination": "bpm-api"
+    },
+    {
+      "source": "^/getProjectCount",
+      "target": "/getProjectCount",
+      "destination": "bpm-api"
+    },
+    {
+      "source": "^/getInvestmentReason",
+      "target": "/getInvestmentReason",
+      "destination": "bpm-api"
+    },
+    {
+      "source": "^/User",
+      "target": "/User",
+      "destination": "bpm-api"
+    },
+    {
+      "source": "^/bpmworkflowruntime/(.*)$",
+      "target": "/$1",
+      "service": "com.sap.bpm.workflow",
+      "endpoint": "workflow_rest_url",
+      "authenticationType": "xsuaa"
+    },
+    {
+      "source": "^/resources/(.*)$",
+      "target": "/resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^/test-resources/(.*)$",
+      "target": "/test-resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^(.*)$",
+      "target": "$1",
+      "service": "html5-apps-repo-rt",
+      "authenticationType": "xsuaa"
+    }
+  ]
+}

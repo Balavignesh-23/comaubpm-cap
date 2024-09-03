@@ -1,0 +1,71 @@
+<mvc:View controllerName="com.dev.comau.bpmhome.controller.Main"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m"
+	xmlns:tnt="sap.tnt">
+    <Page id="page" showHeader="true" class="sapUiNoContentPadding ParentMaster oPacity" showNavButton="false" showFooter="false"
+		enableScrolling="false">
+	<headerContent>
+		<tnt:ToolHeader width="100%" class="sapTntToolHeader sapMTB">
+		<Image class="imageClass" id="image0" src="./img/comau-logo.png"/>
+		<ToolbarSpacer class="toolBarSpacer"/>
+		<Text text="Business Process Management" class="titlePaddingClass" id="label1_1567763872855"/>
+		<ToolbarSpacer class="toolBarSpacer"/>
+		<MenuButton  icon="sap-icon://employee" text="{ path : 'user>/' , formatter : '.menuButtonNameFormatting' }" type="Transparent" menuPosition="EndBottom">
+			<menu>
+				<Menu>
+					<items>
+						<MenuItem text="User Information" icon="sap-icon://customer" press="showDialogInfo"/>
+						<MenuItem text="Log Off" icon="sap-icon://log" press="logout"/>
+						<MenuItem text="Version: {versionApk>/version}" icon="sap-icon://hint" visible="true"/>
+					</items>
+				</Menu>
+			</menu>
+		</MenuButton>
+		</tnt:ToolHeader>
+		</headerContent>
+		<HBox width="auto" height="auto" id="Panel2" alignItems="Center" alignContent="Center" justifyContent="Center" class="welcomeText">
+			<items>
+				<VBox width="auto" visible="true" alignContent="Center" justifyContent="Center" alignItems="Center" height="100%">
+				<items>
+					<Text xmlns="sap.m" class="textWelcome" text="WELCOME {user>/firstNameCaps}" id="text2"/>
+					<Text xmlns="sap.m" class="textWelcome" text="Choose the method to proceed with" id="text3"/>
+				</items>
+				</VBox>
+			</items>
+		</HBox>
+        <content> 
+            <VBox id="vbtab" height="auto" width="auto" class="sapUiTinyMarginTop sapUiSmallMarginEnd">
+			    <items>
+					<HBox xmlns="sap.m" height="auto" width="auto" id="hbox1" justifyContent="Center">
+						<items>
+							<GenericTile id="tile0" class="iconTile sapUiSmallMarginBegin sapUiSmallMarginTop tileStyle sizeMobileTyle sizeTextTyle" header="{i18n>tile0}" frameType="TwoByOne" press="onCapex" headerImage="sap-icon://machine"/>
+							<GenericTile id="tile1" class="iconTile sapUiSmallMarginBegin sapUiSmallMarginTop tileStyle sizeMobileTyle sizeTextTyle" header="{i18n>tile1}" frameType="TwoByOne" press="onDisposal" headerImage="sap-icon://bar-code"/>
+						</items>
+					</HBox>
+					<HBox xmlns="sap.m" height="auto" width="auto" id="hbox2" justifyContent="Center" class="sapUiTinyMarginTop">
+						<items>
+							<GenericTile id="tile2" class="iconTile sapUiSmallMarginBegin sapUiTinyMarginTop tileStyle sizeMobileTyle sizeTextTyle" header="{i18n>tile2}" frameType="TwoByOne" headerImage="sap-icon://activities" press="onJob" state="{= ${WCFuncs>/OTHERACTIVITIES} === '' ? 'Disabled' : 'Loaded'}"/>
+							<GenericTile id="tile3" class="iconTile sapUiSmallMarginBegin sapUiTinyMarginTop tileStyle sizeMobileTyle sizeTextTyle" header="{i18n>tile3}" frameType="TwoByOne" headerImage="sap-icon://timesheet" press="onTimeReport" state="{= ${WCFuncs>/TIMEREPORT} === '' ? 'Disabled' : 'Loaded'}"   />
+						</items>
+					</HBox>
+				</items>
+			</VBox>
+			<VBox id="vbphone" height="auto" width="auto" class="sapUiTinyMarginTop" visible="false">
+				<items>
+					<HBox xmlns="sap.m" height="auto" width="auto" id="hbox1p" justifyContent="Center">
+						<items>
+							<GenericTile id="tile0p" class="iconTile sapUiSmallMarginBegin sapUiTinyMarginTop tileStyle sizeMobileTyle sizeTextTyle" header="{i18n>tile0}" frameType="OneByOne" press="onSelect"/>
+							<GenericTile id="tile1p" class="iconTile sapUiSmallMarginBegin sapUiTinyMarginTop tileStyle sizeMobileTyle sizeTextTyle" header="{i18n>tile1}" frameType="OneByOne" press="onScan"/>
+						</items>
+					</HBox>
+					<HBox xmlns="sap.m" height="auto" width="auto" id="hbox2p" justifyContent="Center" class="sapUiTinyMarginTop">
+						<items>
+							<GenericTile id="tile2p" class="iconTile sapUiSmallMarginBegin sapUiTinyMarginTop tileStyle sizeMobileTyle sizeTextTyle" header="{i18n>tile2}" frameType="OneByOne" press="onJob" state="{= ${WCFuncs>/OTHERACTIVITIES} === '' ? 'Disabled' : 'Loaded'}"/>
+							<GenericTile id="tile3p" class="iconTile sapUiSmallMarginBegin sapUiTinyMarginTop tileStyle sizeMobileTyle sizeTextTyle" header="{i18n>tile3}" frameType="OneByOne" press="onTimeReport"/>
+						</items>
+					</HBox>
+				</items>
+			</VBox>
+        </content>
+    </Page>
+</mvc:View>
