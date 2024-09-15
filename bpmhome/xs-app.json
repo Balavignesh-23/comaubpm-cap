@@ -13,8 +13,18 @@
         "destination": "bpm-api"
     },
     {
+      "source": "^/upload",
+      "target": "/upload",
+      "destination": "bpm-api"
+    },
+    {
       "source": "^/getCountry",
       "target": "/getCountry",
+      "destination": "bpm-api"
+    },
+    {
+      "source": "^/getEntity",
+      "target": "/getEntity",
       "destination": "bpm-api"
     },
     {

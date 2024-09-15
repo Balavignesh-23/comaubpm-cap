@@ -1,11 +1,22 @@
 const oauthClient = require("client-oauth2")
 const express = require("express");
-const app = express();
+const multer = require('multer');
+const AWS = require('aws-sdk');
 const axios = require('axios');
 const xenv = require('@sap/xsenv');
-const PORT = process.env.PORT || 3000;
 const approuter = require("@sap/approuter");
 const hdbext = require('@sap/hdbext');
+
+const app = express();
+const upload = multer();
+
+const s3 = new AWS.S3({
+    accessKeyId: JSON.parse(process.env.VCAP_SERVICES).objectstore[0].credentials.access_key_id,
+    secretAccessKey: JSON.parse(process.env.VCAP_SERVICES).objectstore[0].credentials.secret_access_key,
+    region: JSON.parse(process.env.VCAP_SERVICES).objectstore[0].credentials.region
+  });
+  
+const PORT = process.env.PORT || 3000;
 const Schema = JSON.parse(process.env.VCAP_SERVICES).hana[0].credentials.schema;
 // const callDestination = require('sap-cf-destination');
 app.use(express.json())
@@ -50,6 +61,28 @@ app.get("/User", (req, res, next) => {
                     }
                 });
     });
+});
+
+app.post('/upload', upload.single('myFileUpload'), async (req, res) => {
+    const file = req.file;
+    console.log("file " + JSON.stringify(file));
+    
+    const params = {
+      Bucket: 'hcp-670e0356-84be-46e6-8bb5-1ea93a21e2c2',
+      Key: file.originalname,
+      Body: file.buffer,
+    };
+    // console.log(file.buffer.length);
+    console.log("params " + JSON.stringify(params));
+    try {
+      await s3.putObject(params).promise().then(function(putData){
+        console.log(putData);
+      });
+      res.send('File uploaded successfully!');
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      res.status(500).send('Error uploading file');
+    }
 });
 
 async function generateAccessToken() {
@@ -103,7 +136,31 @@ app.get('/getCountry', async(req,res) => {
             if (error) {
                 return console.error("error while creating connection :" + error);
             }
-            client.exec('SELECT * FROM"' + Schema + '"."SAP_COM_COMAU_ENTITIES_DOCUMENT_SELECTION"',
+            client.exec('SELECT DISTINCT COUNTRYID,COUNTRY FROM "' + Schema + '"."SAP_COM_COMAU_ENTITIES_DOCUMENT_SELECTION"',
+                (err, result) => {
+                    if (err) {
+                        console.log("error on insert:" + err);
+                    } else if(result) {
+                        console.log("result:" + JSON.stringify(result));
+                        res.send(result);
+                    }
+                });
+    });
+})
+
+app.get('/getEntity', async(req,res) => {
+    // res.send("Country API called");
+    var hanaConfig = xenv.cfServiceCredentials({
+        tag: 'hana'
+    });
+    var CountryID = req.query.CountryId;
+    console.log("***Get Query***");
+    hdbext.createConnection(hanaConfig, function (error, client) {
+            if (error) {
+                return console.error("error while creating connection :" + error);
+            }
+            client.exec('SELECT * FROM"' + Schema + '"."SAP_COM_COMAU_ENTITIES_DOCUMENT_SELECTION" WHERE COUNTRYID = ?',
+                [CountryID.toString()],
                 (err, result) => {
                     if (err) {
                         console.log("error on insert:" + err);

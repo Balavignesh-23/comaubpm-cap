@@ -391,7 +391,7 @@
 
 		<VBox id="_IDGenVBox3">
 			<Title id="_IDGenTitle9" text="Attachments"></Title>
-			<Table id="_IDGenTable3" items='{evaluation>/}'>
+			<Table id="_IDGenTable3" items='{FileDetails>/}'>
 			<columns>
 				<Column id="_IDGenColumn13" width="12em">
 					<Text id="_IDGenText22" text="Filename"/>
@@ -420,11 +420,10 @@
 		<items>
 			<ColumnListItem id="_IDGenColumnListItem6" vAlign="Middle">
 				<cells>
-					<Text id="_IDGenText27" text="{evaluation>title}" />
-					<Text id="_IDGenText28" text="{evaluation>withoutres}"/>
-					<Text id="_IDGenText29" text="{evaluation>withres}"/>
-					<Text id="_IDGenText30" text="{evaluation>withoutres}"/>
-					<Text id="_IDGenText31" text="{evaluation>withres}"/>
+					<Text id="_IDGenText27" text="{FileDetails>name}" />
+					<Text id="_IDGenText28" text="{FileDetails>uploadDate}"/>
+					<Text id="_IDGenText29" text="{FileDetails>Owner}"/>
+					<Text id="_IDGenText30" text="{FileDetails>FileSize}"/>
 				</cells>
 			</ColumnListItem>
 		  </items>

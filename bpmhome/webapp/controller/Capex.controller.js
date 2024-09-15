@@ -21,6 +21,8 @@ sap.ui.define([
                 this.getView().setModel(this.oProjectModel, "project");
                 this.oCountryModel = new sap.ui.model.json.JSONModel();
                 this.getView().setModel(this.oCountryModel, "country");
+                this.fileModel = new sap.ui.model.json.JSONModel([]);
+                this.getView().setModel(this.fileModel, "FileDetails");
                 // var resData = this.oSelectedProject.SCALABLE == "X" ? this.oSelectedProject.RESIDUALVALUE : 0;
 
                 //Budget table addition
@@ -374,22 +376,22 @@ sap.ui.define([
                     this.oProfitabilityModel.updateBindings();
 
                     //Evaluation table data
-                    var oEvaluationModel = new sap.ui.model.json.JSONModel();
-                    this.getView().setModel(oEvaluationModel, "evaluation");
-                    oEvaluationModel.setData([
+                    this.oEvaluationModel = new sap.ui.model.json.JSONModel();
+                    this.getView().setModel(this.oEvaluationModel, "evaluation");
+                    this.oEvaluationModel.setData([
                         {
                             title: "NPV 3 years",
-                            withres: "193",
-                            withoutres : "20"
+                            withres: 0,
+                            withoutres : 0
                         },
                         {
                             title: "NPV 5 years",
-                            withres: "193",
-                            withoutres : "20"
+                            withres: 0,
+                            withoutres : 0
                         },
                         {
                             title: "DISCOUNTED PAY BACK",
-                            withoutres : "1"
+                            withoutres : 0
                         }
                     ]);
 
@@ -439,7 +441,6 @@ sap.ui.define([
                         }
                     ]); 
                     this.getView().getModel("magnitude").updateBindings();
-                    this.getView().byId("idLeasing").fireSelectionChange();
             },
 
             onLiveChange: function(oEvent) {
@@ -465,10 +466,13 @@ sap.ui.define([
             onLeaseChange: function(oEvent) {
                 if(oEvent.getSource().getSelectedKey() !== "Operative"){
                     this.getView().byId("idBudgetTable").getItems()[3].setVisible(false);
+                    this.operativeSelect = false;
                 } else {
                     this.getView().byId("idBudgetTable").getItems()[3].setVisible(true);
+                    this.operativeSelect = true;
                 }
                 this.getView().byId("idBenefits").fireSelectionChange();
+                this.getView().byId("idProfitablityTable").getItems()[0].getCells()[2].fireChange()
             },
 
             onBenefitsChange: function(oEvent) {
@@ -476,60 +480,36 @@ sap.ui.define([
                 if(oSelectedItem == "Qualitative") { 
                     this.getView().byId("idProfitablityTable").getItems()[0].setVisible(false);
                     this.getView().byId("idMagnitudeTable").getItems()[3].setVisible(false);
+                    this.quantSelective = false;
                     if(this.getView().byId("idLeasing").getSelectedKey() == "Operative") {
                         this.getView().byId("idProfitablityTable").getItems()[2].setVisible(false);
+                        this.getView().byId("idProfitablityTable").getItems()[5].setVisible(false);
                         this.getView().byId("idMagnitudeTable").getItems()[0].setVisible(false);
                         this.getView().byId("idMagnitudeTable").getItems()[2].setVisible(false);
                     } else {
+                        this.getView().byId("idProfitablityTable").getItems()[2].setVisible(true);
+                        this.getView().byId("idProfitablityTable").getItems()[5].setVisible(true);
                         this.getView().byId("idMagnitudeTable").getItems()[0].setVisible(true);
                         this.getView().byId("idMagnitudeTable").getItems()[2].setVisible(true);
                     }   
                 } else if(oSelectedItem == "Quantitative") {
                     this.getView().byId("idProfitablityTable").getItems()[0].setVisible(true)
                     this.getView().byId("idMagnitudeTable").getItems()[3].setVisible(true);
+                    this.quantSelective = true;
                     if(this.getView().byId("idLeasing").getSelectedKey() == "Operative") {
                         this.getView().byId("idProfitablityTable").getItems()[2].setVisible(false);
+                        this.getView().byId("idProfitablityTable").getItems()[5].setVisible(false);
                         this.getView().byId("idMagnitudeTable").getItems()[0].setVisible(false);
                         this.getView().byId("idMagnitudeTable").getItems()[2].setVisible(false);
                     }  else {
+                        this.getView().byId("idProfitablityTable").getItems()[2].setVisible(true);
+                        this.getView().byId("idProfitablityTable").getItems()[5].setVisible(true);
                         this.getView().byId("idMagnitudeTable").getItems()[0].setVisible(true);
                         this.getView().byId("idMagnitudeTable").getItems()[2].setVisible(true);
                     }
                 }
+                this.getView().byId("idProfitablityTable").getItems()[0].getCells()[2].fireChange();
             },
-
-            // ProfitModelChange: function() {
-            //     if(this.getView().byId("idBenefits").getSelectedKey() == "Quantitative"){
-            //         this.selQuantitative = true;
-            //         this.getView().byId("idProfitablityTable").insertItem(new sap.m.ColumnListItem({
-            //             cells:[
-            //                 new sap.m.Text({text: "Benefits (+)"}),
-            //                 new sap.m.Input({enabled:false,value:""}),
-            //                 new sap.m.Input({enabled:false,value:0}),
-            //                 new sap.m.Input({enabled:false,value:0}),
-            //                 new sap.m.Input({enabled:false,value:0}),
-            //                 new sap.m.Input({enabled:false,value:0}),
-            //                 new sap.m.Input({enabled:false,value:0}),
-            //                 new sap.m.Input({enabled:false,value:0})
-            //                 ]
-            //         }),0);
-            //     } else {
-            //         this.selQuantitative = false;
-            //         for(var i in this.getView().byId("idProfitablityTable").getItems()){
-            //             if(this.getView().byId("idProfitablityTable").getItems()[i].getCells()[0].getText() == "Benefits (+)"){
-            //                 this.getView().byId("idProfitablityTable").removeItem(this.getView().byId("idProfitablityTable").getItems()[i]);
-            //             }
-            //         }
-            //     }
-            //     //if leasing is operative
-            //     // if(this.getView().byId("idLeasing").getSelectedKey() == "Operative"){
-            //     //     if(this.selQuantitative){
-
-            //     //     } else {
-
-            //     //     }
-            //     // }
-            // },
 
             onMagnitudeChange: function(oEvent) {
                 var magObject = oEvent.getSource().getBindingContext("magnitude").getObject();
@@ -544,137 +524,149 @@ sap.ui.define([
 
                 //filling up profitablity model
                 if(magObject.title == "Expenses(-)"){
-                    for(var i in this.getView().getModel("profitablity").getData()){
-                        if(this.getView().getModel("profitablity").getData()[i].title == "Expenses(-)"){
-                            this.getView().getModel("profitablity").getData()[i] = {
-                                title : "Expenses(-)",
-                                value : "",
-                                y1:currentyear,
-                                y1enabled : false,
-                                y2: firstyear,
-                                y2enabled : false,
-                                y3: secondyyear,
-                                y3enabled : false,
-                                y4: thirdyear,
-                                y4enabled : false,
-                                y5: fourthyear,
-                                y5enabled : false,
-                                y6: fifthyear,
-                                y6enabled : false
-                            }
-                        }
-                    }
-                    this.getView().getModel("profitablity").updateBindings(); 
+                    this.getView().getModel("profitablity").getData()[1].y1 = currentyear;
+                    this.getView().getModel("profitablity").getData()[1].y2 = firstyear;
+                    this.getView().getModel("profitablity").getData()[1].y3 = secondyyear;
+                    this.getView().getModel("profitablity").getData()[1].y4 = thirdyear;
+                    this.getView().getModel("profitablity").getData()[1].y5 = fourthyear;
+                    this.getView().getModel("profitablity").getData()[1].y6 = fifthyear
                 }
                 if(magObject.title == "Investments(-)"){
-                    for(var i in this.getView().getModel("profitablity").getData()){
-                        if(this.getView().getModel("profitablity").getData()[i].title == "Investments (-)"){
-                            this.getView().getModel("profitablity").getData()[i] = {
-                                title : "Investments (-)",
-                                value : "",
-                                y1:currentyear,
-                                y1enabled : false,
-                                y2: firstyear,
-                                y2enabled : false,
-                                y3: secondyyear,
-                                y3enabled : false,
-                                y4: thirdyear,
-                                y4enabled : false,
-                                y5: fourthyear,
-                                y5enabled : false,
-                                y6: fifthyear,
-                                y6enabled : false
-                            }
-                        }
-                    }
-                    this.getView().getModel("profitablity").updateBindings(); 
+                    this.getView().getModel("profitablity").getData()[6].y1 = currentyear;
+                    this.getView().getModel("profitablity").getData()[6].y2 = firstyear;
+                    this.getView().getModel("profitablity").getData()[6].y3 = secondyyear;
+                    this.getView().getModel("profitablity").getData()[6].y4 = thirdyear;
+                    this.getView().getModel("profitablity").getData()[6].y5 = fourthyear;
+                    this.getView().getModel("profitablity").getData()[6].y6 = fifthyear
                 }
                 if(magObject.title == "Disposals(+/-)"){
-                    for(var i in this.getView().getModel("profitablity").getData()){
-                        if(this.getView().getModel("profitablity").getData()[i].title == "Disposals (+/-)"){
-                            this.getView().getModel("profitablity").getData()[i] = {
-                                title : "Disposals (+/-)",
-                                value : "",
-                                y1:currentyear,
-                                y1enabled : false,
-                                y2: firstyear,
-                                y2enabled : false,
-                                y3: secondyyear,
-                                y3enabled : false,
-                                y4: thirdyear,
-                                y4enabled : false,
-                                y5: fourthyear,
-                                y5enabled : false,
-                                y6: fifthyear,
-                                y6enabled : false
-                            }
-                        }
-                    }
-                    this.getView().getModel("profitablity").updateBindings(); 
-                }                
+                    this.getView().getModel("profitablity").getData()[7].y1 = currentyear;
+                    this.getView().getModel("profitablity").getData()[7].y2 = firstyear;
+                    this.getView().getModel("profitablity").getData()[7].y3 = secondyyear;
+                    this.getView().getModel("profitablity").getData()[7].y4 = thirdyear;
+                    this.getView().getModel("profitablity").getData()[7].y5 = fourthyear;
+                    this.getView().getModel("profitablity").getData()[7].y6 = fifthyear
+                }
+                this.getView().getModel("profitablity").updateBindings(); 
             },
 
             onProfitChange: function(oEvent) {
                 // this.oProfitabilityModel = this.getView().getModel("profitablity");
                 var oProfitObject = oEvent.getSource().getBindingContext("profitablity").getObject();
-                if(oProfitObject.title == "Depreciation (-)"){
+                //Depreciation(-)
+                if(oProfitObject.title == "Depreciation (-)") {
                     oProfitObject.y1 = parseInt(oProfitObject.y2)/2;
-                    this.oProfitabilityModel.getData()[4].y1 = -1 * this.oProfitabilityModel.getData()[1].y1;
-                    this.oProfitabilityModel.getData()[4].y2 = -1 * this.oProfitabilityModel.getData()[1].y2;
-                    this.oProfitabilityModel.getData()[4].y3 = -1 * this.oProfitabilityModel.getData()[1].y3;
-                    this.oProfitabilityModel.getData()[4].y4 = -1 * this.oProfitabilityModel.getData()[1].y4;
-                    this.oProfitabilityModel.getData()[4].y5 = -1 * this.oProfitabilityModel.getData()[1].y5;
-                    this.oProfitabilityModel.getData()[4].y6 = -1 * this.oProfitabilityModel.getData()[1].y6; 
                 }
-                if(oProfitObject.title == "Depreciation (-)" || oProfitObject.title == "Other (+/-)"){
-                    this.oProfitabilityModel.getData()[3].y1 =  (this.selQuantitative ? this.getView().byId("idProfitablityTable").getItems()[0].getCells()[2].getValue() : 0) + parseInt(this.oProfitabilityModel.getData()[0].y1) + parseInt(this.oProfitabilityModel.getData()[1].y1) + parseInt(this.oProfitabilityModel.getData()[2].y1);
-                    this.oProfitabilityModel.getData()[10].y1 = (-1 * parseInt(this.oProfitabilityModel.getData()[3].y1)) * parseInt(this.oExchangeRateData.TAX);
-                    this.oProfitabilityModel.getData()[3].y2 = (this.selQuantitative ? this.getView().byId("idProfitablityTable").getItems()[0].getCells()[3].getValue() : 0) + parseInt(this.oProfitabilityModel.getData()[0].y2) + parseInt(this.oProfitabilityModel.getData()[1].y2) + parseInt(this.oProfitabilityModel.getData()[2].y2);
-                    this.oProfitabilityModel.getData()[10].y2 = (-1 * parseInt(this.oProfitabilityModel.getData()[3].y2)) * parseInt(this.oExchangeRateData.TAX);
-                    this.oProfitabilityModel.getData()[3].y3 = (this.selQuantitative ? this.getView().byId("idProfitablityTable").getItems()[0].getCells()[4].getValue() : 0) + parseInt(this.oProfitabilityModel.getData()[0].y3) + parseInt(this.oProfitabilityModel.getData()[1].y3) + parseInt(this.oProfitabilityModel.getData()[2].y3);
-                    this.oProfitabilityModel.getData()[10].y3 = (-1 * parseInt(this.oProfitabilityModel.getData()[3].y3)) * parseInt(this.oExchangeRateData.TAX);
-                    this.oProfitabilityModel.getData()[3].y4 = (this.selQuantitative ? this.getView().byId("idProfitablityTable").getItems()[0].getCells()[5].getValue() : 0) + parseInt(this.oProfitabilityModel.getData()[0].y4) + parseInt(this.oProfitabilityModel.getData()[1].y4) + parseInt(this.oProfitabilityModel.getData()[2].y4); 
-                    this.oProfitabilityModel.getData()[10].y4 = (-1 * parseInt(this.oProfitabilityModel.getData()[3].y4)) * parseInt(this.oExchangeRateData.TAX);                   
-                    this.oProfitabilityModel.getData()[3].y5 = (this.selQuantitative ? this.getView().byId("idProfitablityTable").getItems()[0].getCells()[6].getValue() : 0) + parseInt(this.oProfitabilityModel.getData()[0].y5) + parseInt(this.oProfitabilityModel.getData()[1].y5) + parseInt(this.oProfitabilityModel.getData()[2].y5);
-                    this.oProfitabilityModel.getData()[10].y5 = (-1 * parseInt(this.oProfitabilityModel.getData()[3].y5)) * parseInt(this.oExchangeRateData.TAX);
-                    this.oProfitabilityModel.getData()[3].y6 = (this.selQuantitative ? this.getView().byId("idProfitablityTable").getItems()[0].getCells()[7].getValue() : 0) + parseInt(this.oProfitabilityModel.getData()[0].y6) + parseInt(this.oProfitabilityModel.getData()[1].y6) + parseInt(this.oProfitabilityModel.getData()[2].y6); 
-                    this.oProfitabilityModel.getData()[10].y6 = (-1 * parseInt(this.oProfitabilityModel.getData()[3].y6)) * parseInt(this.oExchangeRateData.TAX);
+                //Depreciation(+)
+                this.oProfitabilityModel.getData()[5].y1 = -1 * this.oProfitabilityModel.getData()[2].y1;
+                this.oProfitabilityModel.getData()[5].y2 = -1 * this.oProfitabilityModel.getData()[2].y2;
+                this.oProfitabilityModel.getData()[5].y3 = -1 * this.oProfitabilityModel.getData()[2].y3;
+                this.oProfitabilityModel.getData()[5].y4 = -1 * this.oProfitabilityModel.getData()[2].y4;
+                this.oProfitabilityModel.getData()[5].y5 = -1 * this.oProfitabilityModel.getData()[2].y5;
+                this.oProfitabilityModel.getData()[5].y6 = -1 * this.oProfitabilityModel.getData()[2].y6
+                //TradingProfit
+                this.oProfitabilityModel.getData()[4].y1 = parseInt(this.oProfitabilityModel.getData()[1].y1) + parseInt(this.oProfitabilityModel.getData()[3].y1);
+                this.oProfitabilityModel.getData()[4].y2 = parseInt(this.oProfitabilityModel.getData()[1].y2) + parseInt(this.oProfitabilityModel.getData()[3].y2);
+                this.oProfitabilityModel.getData()[4].y3 = parseInt(this.oProfitabilityModel.getData()[1].y3) + parseInt(this.oProfitabilityModel.getData()[3].y3);
+                this.oProfitabilityModel.getData()[4].y4 = parseInt(this.oProfitabilityModel.getData()[1].y4) + parseInt(this.oProfitabilityModel.getData()[3].y4);
+                this.oProfitabilityModel.getData()[4].y5 = parseInt(this.oProfitabilityModel.getData()[1].y5) + parseInt(this.oProfitabilityModel.getData()[3].y5);
+                this.oProfitabilityModel.getData()[4].y6 = parseInt(this.oProfitabilityModel.getData()[1].y6) + parseInt(this.oProfitabilityModel.getData()[3].y6);
+                if(this.quantSelective ) {
+                    this.oProfitabilityModel.getData()[4].y1 = parseInt(this.oProfitabilityModel.getData()[4].y1) + parseInt(this.oProfitabilityModel.getData()[0].y1);
+                    this.oProfitabilityModel.getData()[4].y2 = parseInt(this.oProfitabilityModel.getData()[4].y2) + parseInt(this.oProfitabilityModel.getData()[0].y2);  
+                    this.oProfitabilityModel.getData()[4].y3 = parseInt(this.oProfitabilityModel.getData()[4].y3) + parseInt(this.oProfitabilityModel.getData()[0].y3);
+                    this.oProfitabilityModel.getData()[4].y4 = parseInt(this.oProfitabilityModel.getData()[4].y4) + parseInt(this.oProfitabilityModel.getData()[0].y4);
+                    this.oProfitabilityModel.getData()[4].y5 = parseInt(this.oProfitabilityModel.getData()[4].y5) + parseInt(this.oProfitabilityModel.getData()[0].y5);
+                    this.oProfitabilityModel.getData()[4].y6 = parseInt(this.oProfitabilityModel.getData()[4].y6) + parseInt(this.oProfitabilityModel.getData()[0].y6);
                 }
-
-                if(oProfitObject.title == "Residual value (+)") {
-                    this.oProfitabilityModel.getData()[15].y1 = parseInt(this.oProfitabilityModel.getData()[9].y1) * this.oProfitabilityModel.getData()[12].y1;
-                    this.oProfitabilityModel.getData()[15].y2 = parseInt(this.oProfitabilityModel.getData()[9].y2) * this.oProfitabilityModel.getData()[12].y2;
-                    this.oProfitabilityModel.getData()[15].y3 = parseInt(this.oProfitabilityModel.getData()[9].y3) * this.oProfitabilityModel.getData()[12].y3;
-                    this.oProfitabilityModel.getData()[15].y4 = parseInt(this.oProfitabilityModel.getData()[9].y4) * this.oProfitabilityModel.getData()[12].y4;
-                    this.oProfitabilityModel.getData()[15].y5 = parseInt(this.oProfitabilityModel.getData()[9].y5) * this.oProfitabilityModel.getData()[12].y5;
-                    this.oProfitabilityModel.getData()[15].y6 = parseInt(this.oProfitabilityModel.getData()[9].y6) * this.oProfitabilityModel.getData()[12].y6;
-                }
-                if(oProfitObject.title == "Depreciation (+)" || oProfitObject.title == "Investments (-)" || oProfitObject.title == "Disposals (+/-)" || oProfitObject.title == "Change of Gross Working Capital (-)" || oProfitObject.title == "Extraordinary Cash Expenses and one-off items (-)" || oProfitObject.title == "Residual value (+)") {
-                    this.oProfitabilityModel.getData()[11].y1 = parseInt(this.oProfitabilityModel.getData()[3].y1) + parseInt(this.oProfitabilityModel.getData()[4].y1) + parseInt(this.oProfitabilityModel.getData()[5].y1) + parseInt(this.oProfitabilityModel.getData()[6].y1) + parseInt(this.oProfitabilityModel.getData()[7].y1) + parseInt(this.oProfitabilityModel.getData()[8].y1) + parseInt(this.oProfitabilityModel.getData()[9].y1) + parseInt(this.oProfitabilityModel.getData()[10].y1);
-                    this.oProfitabilityModel.getData()[13].y1 = this.oProfitabilityModel.getData()[11].y1 * this.oProfitabilityModel.getData()[12].y1; 
-                    this.oProfitabilityModel.getData()[14].y1 = this.oProfitabilityModel.getData()[13].y1;
-                    
-                    this.oProfitabilityModel.getData()[11].y2 = parseInt(this.oProfitabilityModel.getData()[3].y2) + parseInt(this.oProfitabilityModel.getData()[4].y2) + parseInt(this.oProfitabilityModel.getData()[5].y2) + parseInt(this.oProfitabilityModel.getData()[6].y2) + parseInt(this.oProfitabilityModel.getData()[7].y2) + parseInt(this.oProfitabilityModel.getData()[8].y2) + parseInt(this.oProfitabilityModel.getData()[9].y2) + parseInt(this.oProfitabilityModel.getData()[10].y2);
-                    this.oProfitabilityModel.getData()[13].y2 = this.oProfitabilityModel.getData()[11].y2 * this.oProfitabilityModel.getData()[12].y2;
-                    this.oProfitabilityModel.getData()[14].y2 = this.oProfitabilityModel.getData()[14].y1 + this.oProfitabilityModel.getData()[13].y1;
-                    
-                    this.oProfitabilityModel.getData()[11].y3 = parseInt(this.oProfitabilityModel.getData()[3].y3) + parseInt(this.oProfitabilityModel.getData()[4].y3) + parseInt(this.oProfitabilityModel.getData()[5].y3) + parseInt(this.oProfitabilityModel.getData()[6].y3) + parseInt(this.oProfitabilityModel.getData()[7].y3) + parseInt(this.oProfitabilityModel.getData()[8].y3) + parseInt(this.oProfitabilityModel.getData()[9].y3) + parseInt(this.oProfitabilityModel.getData()[10].y3);
-                    this.oProfitabilityModel.getData()[13].y3 = this.oProfitabilityModel.getData()[11].y3 * this.oProfitabilityModel.getData()[12].y3;
-                    this.oProfitabilityModel.getData()[14].y3 = this.oProfitabilityModel.getData()[14].y2 + this.oProfitabilityModel.getData()[13].y3;
-                    
-                    this.oProfitabilityModel.getData()[11].y4 = parseInt(this.oProfitabilityModel.getData()[3].y4) + parseInt(this.oProfitabilityModel.getData()[4].y4) + parseInt(this.oProfitabilityModel.getData()[5].y4) + parseInt(this.oProfitabilityModel.getData()[6].y4) + parseInt(this.oProfitabilityModel.getData()[7].y4) + parseInt(this.oProfitabilityModel.getData()[8].y4) + parseInt(this.oProfitabilityModel.getData()[9].y4) + parseInt(this.oProfitabilityModel.getData()[10].y4);
-                    this.oProfitabilityModel.getData()[13].y4 = this.oProfitabilityModel.getData()[11].y4 * this.oProfitabilityModel.getData()[12].y4;
-                    this.oProfitabilityModel.getData()[14].y4 = this.oProfitabilityModel.getData()[14].y3 + this.oProfitabilityModel.getData()[13].y4;
-                    
-                    this.oProfitabilityModel.getData()[11].y5 = parseInt(this.oProfitabilityModel.getData()[3].y5) + parseInt(this.oProfitabilityModel.getData()[4].y5) + parseInt(this.oProfitabilityModel.getData()[5].y5) + parseInt(this.oProfitabilityModel.getData()[6].y5) + parseInt(this.oProfitabilityModel.getData()[7].y5) + parseInt(this.oProfitabilityModel.getData()[8].y5) + parseInt(this.oProfitabilityModel.getData()[9].y5) + parseInt(this.oProfitabilityModel.getData()[10].y5);
-                    this.oProfitabilityModel.getData()[13].y5 = this.oProfitabilityModel.getData()[11].y5 * this.oProfitabilityModel.getData()[12].y5;
-                    this.oProfitabilityModel.getData()[14].y5 = this.oProfitabilityModel.getData()[14].y4 + this.oProfitabilityModel.getData()[13].y5;
-                    
-                    this.oProfitabilityModel.getData()[11].y6 = parseInt(this.oProfitabilityModel.getData()[3].y6) + parseInt(this.oProfitabilityModel.getData()[4].y6) + parseInt(this.oProfitabilityModel.getData()[5].y6) + parseInt(this.oProfitabilityModel.getData()[6].y6) + parseInt(this.oProfitabilityModel.getData()[7].y6) + parseInt(this.oProfitabilityModel.getData()[8].y6) + parseInt(this.oProfitabilityModel.getData()[9].y6) + parseInt(this.oProfitabilityModel.getData()[10].y6);
-                    this.oProfitabilityModel.getData()[13].y6 = this.oProfitabilityModel.getData()[11].y6 * this.oProfitabilityModel.getData()[12].y6;
-                    this.oProfitabilityModel.getData()[14].y6 = this.oProfitabilityModel.getData()[14].y5 + this.oProfitabilityModel.getData()[13].y6;
-                }
+                if(!this.operativeSelect) {
+                    this.oProfitabilityModel.getData()[4].y1 = parseInt(this.oProfitabilityModel.getData()[4].y1) + parseInt(this.oProfitabilityModel.getData()[2].y1);
+                    this.oProfitabilityModel.getData()[4].y2 = parseInt(this.oProfitabilityModel.getData()[4].y2) + parseInt(this.oProfitabilityModel.getData()[2].y2);  
+                    this.oProfitabilityModel.getData()[4].y3 = parseInt(this.oProfitabilityModel.getData()[4].y3) + parseInt(this.oProfitabilityModel.getData()[2].y3);
+                    this.oProfitabilityModel.getData()[4].y4 = parseInt(this.oProfitabilityModel.getData()[4].y4) + parseInt(this.oProfitabilityModel.getData()[2].y4);
+                    this.oProfitabilityModel.getData()[4].y5 = parseInt(this.oProfitabilityModel.getData()[4].y5) + parseInt(this.oProfitabilityModel.getData()[2].y5);
+                    this.oProfitabilityModel.getData()[4].y6 = parseInt(this.oProfitabilityModel.getData()[4].y6) + parseInt(this.oProfitabilityModel.getData()[2].y6);
+                } 
+                //Tax expense(%)
+                this.oProfitabilityModel.getData()[11].y1 = (-1 * parseInt(this.oProfitabilityModel.getData()[4].y1)) * parseInt(this.oExchangeRateData.TAX);
+                this.oProfitabilityModel.getData()[11].y2 = (-1 * parseInt(this.oProfitabilityModel.getData()[4].y2)) * parseInt(this.oExchangeRateData.TAX);
+                this.oProfitabilityModel.getData()[11].y3 = (-1 * parseInt(this.oProfitabilityModel.getData()[4].y3)) * parseInt(this.oExchangeRateData.TAX);
+                this.oProfitabilityModel.getData()[11].y4 = (-1 * parseInt(this.oProfitabilityModel.getData()[4].y4)) * parseInt(this.oExchangeRateData.TAX);                   
+                this.oProfitabilityModel.getData()[11].y5 = (-1 * parseInt(this.oProfitabilityModel.getData()[4].y5)) * parseInt(this.oExchangeRateData.TAX);
+                this.oProfitabilityModel.getData()[11].y6 = (-1 * parseInt(this.oProfitabilityModel.getData()[4].y6)) * parseInt(this.oExchangeRateData.TAX);
+                //Cashflow
+                this.oProfitabilityModel.getData()[12].y1 = parseInt(this.oProfitabilityModel.getData()[4].y1) + parseInt(this.oProfitabilityModel.getData()[5].y1) + parseInt(this.oProfitabilityModel.getData()[6].y1) + parseInt(this.oProfitabilityModel.getData()[7].y1) + parseInt(this.oProfitabilityModel.getData()[8].y1) + parseInt(this.oProfitabilityModel.getData()[9].y1) + parseInt(this.oProfitabilityModel.getData()[10].y1) + parseInt(this.oProfitabilityModel.getData()[11].y1);
+                this.oProfitabilityModel.getData()[12].y2 = parseInt(this.oProfitabilityModel.getData()[4].y2) + parseInt(this.oProfitabilityModel.getData()[5].y2) + parseInt(this.oProfitabilityModel.getData()[6].y2) + parseInt(this.oProfitabilityModel.getData()[7].y2) + parseInt(this.oProfitabilityModel.getData()[8].y2) + parseInt(this.oProfitabilityModel.getData()[9].y2) + parseInt(this.oProfitabilityModel.getData()[10].y2) + parseInt(this.oProfitabilityModel.getData()[11].y2);  
+                this.oProfitabilityModel.getData()[12].y3 = parseInt(this.oProfitabilityModel.getData()[4].y3) + parseInt(this.oProfitabilityModel.getData()[5].y3) + parseInt(this.oProfitabilityModel.getData()[6].y3) + parseInt(this.oProfitabilityModel.getData()[7].y3) + parseInt(this.oProfitabilityModel.getData()[8].y3) + parseInt(this.oProfitabilityModel.getData()[9].y3) + parseInt(this.oProfitabilityModel.getData()[10].y3) + parseInt(this.oProfitabilityModel.getData()[11].y3);
+                this.oProfitabilityModel.getData()[12].y4 = parseInt(this.oProfitabilityModel.getData()[4].y4) + parseInt(this.oProfitabilityModel.getData()[5].y4) + parseInt(this.oProfitabilityModel.getData()[6].y4) + parseInt(this.oProfitabilityModel.getData()[7].y4) + parseInt(this.oProfitabilityModel.getData()[8].y4) + parseInt(this.oProfitabilityModel.getData()[9].y4) + parseInt(this.oProfitabilityModel.getData()[10].y4) + parseInt(this.oProfitabilityModel.getData()[11].y4);
+                this.oProfitabilityModel.getData()[12].y5 = parseInt(this.oProfitabilityModel.getData()[4].y5) + parseInt(this.oProfitabilityModel.getData()[5].y5) + parseInt(this.oProfitabilityModel.getData()[6].y5) + parseInt(this.oProfitabilityModel.getData()[7].y5) + parseInt(this.oProfitabilityModel.getData()[8].y5) + parseInt(this.oProfitabilityModel.getData()[9].y5) + parseInt(this.oProfitabilityModel.getData()[10].y5) + parseInt(this.oProfitabilityModel.getData()[11].y5);
+                this.oProfitabilityModel.getData()[12].y6 = parseInt(this.oProfitabilityModel.getData()[4].y6) + parseInt(this.oProfitabilityModel.getData()[5].y6) + parseInt(this.oProfitabilityModel.getData()[6].y6) + parseInt(this.oProfitabilityModel.getData()[7].y6) + parseInt(this.oProfitabilityModel.getData()[8].y6) + parseInt(this.oProfitabilityModel.getData()[9].y6) + parseInt(this.oProfitabilityModel.getData()[10].y6) + parseInt(this.oProfitabilityModel.getData()[11].y6);
+                // Discounted Cash flow
+                this.oProfitabilityModel.getData()[14].y1 = parseInt(this.oProfitabilityModel.getData()[12].y1) * this.oProfitabilityModel.getData()[13].y1;
+                this.oProfitabilityModel.getData()[14].y2 = parseInt(this.oProfitabilityModel.getData()[12].y2) * this.oProfitabilityModel.getData()[13].y2;
+                this.oProfitabilityModel.getData()[14].y3 = parseInt(this.oProfitabilityModel.getData()[12].y3) * this.oProfitabilityModel.getData()[13].y3;
+                this.oProfitabilityModel.getData()[14].y4 = parseInt(this.oProfitabilityModel.getData()[12].y4) * this.oProfitabilityModel.getData()[13].y4;
+                this.oProfitabilityModel.getData()[14].y5 = parseInt(this.oProfitabilityModel.getData()[12].y5) * this.oProfitabilityModel.getData()[13].y5;
+                this.oProfitabilityModel.getData()[14].y6 = parseInt(this.oProfitabilityModel.getData()[12].y6) * this.oProfitabilityModel.getData()[13].y6;
+                // Cumulated Discount Cash Flow
+                this.oProfitabilityModel.getData()[15].y1 = 0 + this.oProfitabilityModel.getData()[14].y1;
+                this.oProfitabilityModel.getData()[15].y2 = parseInt(this.oProfitabilityModel.getData()[15].y1) + this.oProfitabilityModel.getData()[14].y2;
+                this.oProfitabilityModel.getData()[15].y3 = parseInt(this.oProfitabilityModel.getData()[15].y2) + this.oProfitabilityModel.getData()[14].y3;
+                this.oProfitabilityModel.getData()[15].y4 = parseInt(this.oProfitabilityModel.getData()[15].y3) + this.oProfitabilityModel.getData()[14].y4;
+                this.oProfitabilityModel.getData()[15].y5 = parseInt(this.oProfitabilityModel.getData()[15].y4) + this.oProfitabilityModel.getData()[14].y5;
+                this.oProfitabilityModel.getData()[15].y6 = parseInt(this.oProfitabilityModel.getData()[15].y5) + this.oProfitabilityModel.getData()[14].y6;
+                //Discounted Residual Value
+                this.oProfitabilityModel.getData()[16].y1 = parseInt(this.oProfitabilityModel.getData()[10].y1) * this.oProfitabilityModel.getData()[13].y1;
+                this.oProfitabilityModel.getData()[16].y2 = parseInt(this.oProfitabilityModel.getData()[10].y2) * this.oProfitabilityModel.getData()[13].y2;
+                this.oProfitabilityModel.getData()[16].y3 = parseInt(this.oProfitabilityModel.getData()[10].y3) * this.oProfitabilityModel.getData()[13].y3;
+                this.oProfitabilityModel.getData()[16].y4 = parseInt(this.oProfitabilityModel.getData()[10].y4) * this.oProfitabilityModel.getData()[13].y4;
+                this.oProfitabilityModel.getData()[16].y5 = parseInt(this.oProfitabilityModel.getData()[10].y5) * this.oProfitabilityModel.getData()[13].y5;
+                this.oProfitabilityModel.getData()[16].y6 = parseInt(this.oProfitabilityModel.getData()[10].y6) * this.oProfitabilityModel.getData()[13].y6;
                 this.oProfitabilityModel.updateBindings();
+                //Financial Evaluation
+                this.oEvaluationModel.getData()[0].withres = this.oProfitabilityModel.getData()[15].y4;
+                this.oEvaluationModel.getData()[0].withoutres = this.oProfitabilityModel.getData()[15].y4 - this.oProfitabilityModel.getData()[16].y4;
+                this.oEvaluationModel.getData()[1].withres = this.oProfitabilityModel.getData()[15].y6;
+                this.oEvaluationModel.getData()[1].withoutres = this.oProfitabilityModel.getData()[15].y6 - this.oProfitabilityModel.getData()[16].y6;
+                this.oEvaluationModel.getData()[2].withoutres = 0;
+                this.oEvaluationModel.updateBindings();
+            },
+
+            handleUploadPress: function() {
+                var oFileUploader = this.byId("fileUploader");  
+                oFileUploader.setSendXHR(true);
+                oFileUploader.addHeaderParameter(new sap.ui.unified.FileUploaderParameter({
+                        name: "X-CSRF-Token", 
+                        value: this.getOwnerComponent()._fetchToken()
+                   })
+                );             
+                this.fileModel.getData().push(
+                {
+                    name : oFileUploader.oFileUpload.files[0].name,
+                    FileSize : oFileUploader.oFileUpload.files[0].size,
+                    uploadDate : new Date(),
+                    Owner : "gaspare.patti@accenture.com" //Get username from FLP
+                });
+                this.fileModel.updateBindings();
+                oFileUploader.checkFileReadable().then(function() {
+                    oFileUploader.upload();
+                }, function(error) {
+                    MessageToast.show("The file cannot be read. It may have changed.");
+                }).then(function() {
+                    oFileUploader.clear();
+                });
+            },
+
+            handleUploadComplete: function(oEvent) {
+                var sResponse = oEvent.getParameter("response"),
+                    aRegexResult = /\d{4}/.exec(sResponse),
+                    iHttpStatusCode = aRegexResult && parseInt(aRegexResult[0]),
+                    sMessage;
+    
+                if (sResponse) {
+                    sMessage = iHttpStatusCode === 200 ? sResponse + " (Upload Success)" : sResponse + " (Upload Error)";
+                    MessageToast.show(sMessage);
+                }
             },
 
             getUserData: function() {
@@ -754,16 +746,39 @@ sap.ui.define([
                 this.country = oEvent.getSource().getSelectedItem().getBindingContext("country").getObject().COUNTRY;
                 // var oCountry = oEvent.getSource().getBindings();
                 var oEntity = [];
-                for(var i in this.oCountryModel.getData()){
-                    if(this.oCountryModel.getData()[i].COUNTRYID == this.countryID){
-                        oEntity.push(this.oCountryModel.getData()[i])
-                    }
-                }
-                this.getView().byId("idLegalEntity").setValue(oEntity[0].LEGALENTITYDESC);
                 var oEntityModel = new sap.ui.model.json.JSONModel();
-                oEntityModel.setData(oEntity);
-                this.getView().setModel(oEntityModel, "entity");
-                this.onExchangeRateAdd();
+                // for(var i in this.oCountryModel.getData()){
+                //     if(this.oCountryModel.getData()[i].COUNTRYID == this.countryID){
+                //         oEntity.push(this.oCountryModel.getData()[i])
+                //     }
+                // }
+                var appId = this.getOwnerComponent().getManifestEntry("/sap.app/id");
+                var appPath = appId.replaceAll(".", "/");
+                var appModulePath = jQuery.sap.getModulePath(appPath);
+                var url = appModulePath + "/getEntity";
+                var that = this;
+                jQuery.ajax({
+                    url:url,
+                    method:"GET",
+                    contentType: 'application/json',
+                    headers: {
+                        "X-CSRF-Token": this.getOwnerComponent()._fetchToken(),
+                    },
+                    data: { 
+                        CountryId: that.countryID
+                    },
+                    success: function(result) {
+                        oEntityModel.setData(result);
+                        that.getView().byId("idLegalEntity").setValue(result[0].LEGALENTITYDESC);
+                        that.getView().setModel(oEntityModel, "entity");
+                        that.onExchangeRateAdd();
+                    },
+                    error: function(e) {
+                        // log error in browser
+                        console.log("app history failed :" +e.message);
+                        this.getView().setBusy(false);
+                    }
+                });   
             },
 
             onForecastselect: function(oEvent){
@@ -889,6 +904,7 @@ sap.ui.define([
                     },
                     success: function(result) {
                         that.oExchangeRateData = result[0];
+                        that.getView().byId("idLeasing").fireSelectionChange();
                         for(var i in that.getView().getModel("profitablity").getData()){
                             if(that.getView().getModel("profitablity").getData()[i].title == "WACC (%)"){
                                 that.getView().getModel("profitablity").getData()[i].y1 =  1/Math.pow(1+parseInt(that.oExchangeRateData.WACC),1);
@@ -960,6 +976,9 @@ sap.ui.define([
                     },
                     success: function(result) {
                         that.oCountryModel.setData(result);
+                        that.oCountryModel.updateBindings();
+                        that.getView().byId("_IDGenComboBox1").setSelectedItem(that.getView().byId("_IDGenComboBox1").getItems()[0]);
+                        that.getView().byId("_IDGenComboBox1").fireSelectionChange();
                     },
                     error: function(e) {
                         // log error in browser
