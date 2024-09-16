@@ -28,6 +28,16 @@
       "destination": "bpm-api"
     },
     {
+      "source": "^/getOrigin",
+      "target": "/getOrigin",
+      "destination": "bpm-api"
+    },
+    {
+      "source": "^/getDestn",
+      "target": "/getDestn",
+      "destination": "bpm-api"
+    },
+    {
       "source": "^/getProject",
       "target": "/getProject",
       "destination": "bpm-api"

@@ -628,7 +628,29 @@ sap.ui.define([
                 this.oEvaluationModel.getData()[0].withoutres = this.oProfitabilityModel.getData()[15].y4 - this.oProfitabilityModel.getData()[16].y4;
                 this.oEvaluationModel.getData()[1].withres = this.oProfitabilityModel.getData()[15].y6;
                 this.oEvaluationModel.getData()[1].withoutres = this.oProfitabilityModel.getData()[15].y6 - this.oProfitabilityModel.getData()[16].y6;
-                this.oEvaluationModel.getData()[2].withoutres = 0;
+                let discountedPayBack = 0;
+                if(this.oProfitabilityModel.getData()[15].y1 > 0){
+                    discountedPayBack = 1
+                } else if(this.oProfitabilityModel.getData()[15].y2 > 0){
+                    discountedPayBack = 2
+                } else if(this.oProfitabilityModel.getData()[15].y3 > 0){
+                    discountedPayBack = 3
+                } else if(this.oProfitabilityModel.getData()[15].y4 > 0){
+                    discountedPayBack = 4
+                } else if(this.oProfitabilityModel.getData()[15].y5 > 0){
+                    discountedPayBack = 5
+                } else if(this.oProfitabilityModel.getData()[15].y6 > 0){
+                    discountedPayBack = 6
+                }
+                if(discountedPayBack){
+                    for(var i=discountedPayBack; i<6; i++){
+                        if(eval("this.oProfitabilityModel.getData()[15].y" + i.toString()) < 0){
+                            discountedPayBack = discountedPayBack + "*";
+                            break;
+                        }
+                    }
+                }
+                this.oEvaluationModel.getData()[2].withoutres = discountedPayBack;
                 this.oEvaluationModel.updateBindings();
             },
 
@@ -932,7 +954,7 @@ sap.ui.define([
                 this.oSelectedEntity = oSelectedItem.getBindingContext("entity").getObject().LEGALENTITYID;
                 var oSelectedEntityDesc = oSelectedItem.getBindingContext("entity").getObject().LEGALENTITYDESC;
                 // var oSelectedCountryID = oEvent.getSource().getSelectedItem().getBindingContext("country").getObject().COUNTRYID;
-
+                
                 //Creating model for bu as per selected country and entity
                 var bu = [];
                 for(var i in this.oCountryModel.getData()){

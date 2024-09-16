@@ -1,140 +1,140 @@
+---
 _schema-version: "3.2"
 ID: comaubpmcap
 version: 0.0.1
 modules:
-- name: comaubpm
-  type: nodejs
-  path: app
-  requires:
-  - name: comaucloil_cap-db
-  - name: uaa_comaucloil_cap
-  - name: comaubpmcap-destination-service
-  - name: wm_workflow
-    parameters:
-      content-target: true
-  - name: sap_processautomation
-    parameters:
-      content-target: true
-      service-key:
-        config:
-          deployUsageScenario: workflow
-        name: spa-workflow-service-key
-- name: comaubpm_cap-approuter
-  type: approuter.nodejs
-  path: approuter
-  requires:
-  - name: comaucloil_cap-db
-  - name: comaubpmcap_html_repo_runtime
-  - name: uaa_comaucloil_cap
-  - name: comaubpmcap-destination-service
-  - name: wm_workflow
-    parameters:
-      content-target: true
-
-- name: comaubpmcap_ui_deployer
-  type: com.sap.application.content
-  path: .
-  requires:
-  - name: wm_workflow
-    parameters:
-      content-target: true
-  - name: comaubpmcap-repo-host
-    parameters:
-      content-target: true
-  build-parameters:
-    build-result: resources
+  - name: comaubpm
+    type: nodejs
+    path: app
     requires:
-    - artifacts:
-      - comdevcomaubpmhome.zip
-      name: comdevcomaubpmhome
-      target-path: resources/
-- name: comdevcomaubpmhome
-  type: html5
-  path: bpmhome
-  build-parameters:
-    build-result: dist
-    builder: custom
-    commands:
-    - npm install
-    - npm run build:cf
-    supported-platforms: []
-- name: comaubpmcap-destination-content
-  type: com.sap.application.content
-  requires:
-  - name: comaubpmcap-destination-service
+      - name: comaucloil_cap-db
+      - name: uaa_comaucloil_cap
+      - name: comaubpmcap-destination-service
+      - name: wm_workflow
+        parameters:
+          content-target: true
+      - name: sap_processautomation
+        parameters:
+          content-target: true
+          service-key:
+            config:
+              deployUsageScenario: workflow
+            name: spa-workflow-service-key
+  - name: comaubpm_cap-approuter
+    type: approuter.nodejs
+    path: approuter
+    requires:
+      - name: comaucloil_cap-db
+      - name: comaubpmcap_html_repo_runtime
+      - name: uaa_comaucloil_cap
+      - name: comaubpmcap-destination-service
+      - name: wm_workflow
+        parameters:
+          content-target: true
+  - name: comaubpmcap_ui_deployer
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: wm_workflow
+        parameters:
+          content-target: true
+      - name: comaubpmcap-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - artifacts:
+            - comdevcomaubpmhome.zip
+          name: comdevcomaubpmhome
+          target-path: resources/
+  - name: comdevcomaubpmhome
+    type: html5
+    path: bpmhome
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+  - name: comaubpmcap-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: comaubpmcap-destination-service
+        parameters:
+          content-target: true
+      - name: comaubpmcap-repo-host
+        parameters:
+          service-key:
+            name: comaubpmcap-repo-host-key
+      - name: uaa_comaucloil_cap
+        parameters:
+          service-key:
+            name: uaa_comaubpm-key
     parameters:
-      content-target: true
-  - name: comaubpmcap-repo-host
-    parameters:
-      service-key:
-        name: comaubpmcap-repo-host-key
-  - name: uaa_comaucloil_cap
-    parameters:
-      service-key:
-        name: uaa_comaubpm-key
-  parameters:
-    content:
-      instance:
-        destinations:
-        - Name: comaubpm_comaubpmcap_repo_host
-          ServiceInstanceName: comaubpmcap-html5-srv
-          ServiceKeyName: comaubpmcap-repo-host-key
-          sap.cloud.service: comaubpm
-        - Authentication: OAuth2UserTokenExchange
-          Name: comaubpm_uaa_comaubpmcap
-          ServiceInstanceName: comaubpmcap-xsuaa-service
-          ServiceKeyName: uaa_comaubpmcap-key
-          sap.cloud.service: comaubpm
-        existing_destinations_policy: ignore
-  build-parameters:
-    no-source: true
+      content:
+        instance:
+          destinations:
+            - Name: comaubpm_comaubpmcap_repo_host
+              ServiceInstanceName: comaubpmcap-html5-srv
+              ServiceKeyName: comaubpmcap-repo-host-key
+              sap.cloud.service: comaubpm
+            - Authentication: OAuth2UserTokenExchange
+              Name: comaubpm_uaa_comaubpmcap
+              ServiceInstanceName: comaubpmcap-xsuaa-service
+              ServiceKeyName: uaa_comaubpmcap-key
+              sap.cloud.service: comaubpm
+          existing_destinations_policy: ignore
+    build-parameters:
+      no-source: true
 resources:
-- name: comaucloil_cap-db
-  type: com.sap.xs.hdi-container
-  parameters:
-    config:
-      schema: COMAUCLOIL
-    service: hana
-    service-plan: hdi-shared
-  properties:
-    hdi-container-name: ${service-name}
-    hdi-service-name: ${service-name}
-- name: comaubpmcap-repo-host
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: html5-apps-repo
-    service-name: comaubpmcap-html5-srv
-    service-plan: app-host
-- name: comaubpmcap-destination-service
-  type: org.cloudfoundry.managed-service
-  parameters:
-    config:
-      HTML5Runtime_enabled: true
-      version: 1.0.0
-    service: destination
-    service-name: comaubpmcap-destination-service
-    service-plan: lite
-- name: comaubpmcap_html_repo_runtime
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: html5-apps-repo
-    service-plan: app-runtime
-- name: uaa_comaucloil_cap
-  type: org.cloudfoundry.managed-service
-  parameters:
-    path: ./xs-security.json
-    service: xsuaa
-    service-name: comaubpmcap-xsuaa-service
-    service-plan: application
-- name: sap_processautomation
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: process-automation-service
-    service-plan: standard
-- name: wm_workflow
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: workflow
-    service-plan: standard
+  - name: comaucloil_cap-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      config:
+        schema: COMAUCLOIL
+      service: hana
+      service-plan: hdi-shared
+    properties:
+      hdi-container-name: ${service-name}
+      hdi-service-name: ${service-name}
+  - name: comaubpmcap-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-name: comaubpmcap-html5-srv
+      service-plan: app-host
+  - name: comaubpmcap-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+      service: destination
+      service-name: comaubpmcap-destination-service
+      service-plan: lite
+  - name: comaubpmcap_html_repo_runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime
+  - name: uaa_comaucloil_cap
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: comaubpmcap-xsuaa-service
+      service-plan: application
+  - name: sap_processautomation
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: process-automation-service
+      service-plan: standard
+  - name: wm_workflow
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: workflow
+      service-plan: standard
 parameters:
   deploy_mode: html5-repo

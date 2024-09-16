@@ -136,7 +136,7 @@ app.get('/getCountry', async(req,res) => {
             if (error) {
                 return console.error("error while creating connection :" + error);
             }
-            client.exec('SELECT DISTINCT COUNTRYID,COUNTRY FROM "' + Schema + '"."SAP_COM_COMAU_ENTITIES_DOCUMENT_SELECTION"',
+            client.exec('SELECT DISTINCT COUNTRYID, COUNTRY, LEGALENTITYID, LEGALENTITYDESC, BU_ORIGIN_ID, BU_ORIGIN, BU_DEST_ID, BU_DEST FROM "' + Schema + '"."SAP_COM_COMAU_ENTITIES_DOCUMENT_SELECTION"',
                 (err, result) => {
                     if (err) {
                         console.log("error on insert:" + err);
@@ -159,7 +159,7 @@ app.get('/getEntity', async(req,res) => {
             if (error) {
                 return console.error("error while creating connection :" + error);
             }
-            client.exec('SELECT * FROM"' + Schema + '"."SAP_COM_COMAU_ENTITIES_DOCUMENT_SELECTION" WHERE COUNTRYID = ?',
+            client.exec('SELECT DISTINCT LEGALENTITYID, LEGALENTITYDESC FROM"' + Schema + '"."SAP_COM_COMAU_ENTITIES_DOCUMENT_SELECTION" WHERE COUNTRYID = ?',
                 [CountryID.toString()],
                 (err, result) => {
                     if (err) {
